@@ -1,0 +1,648 @@
+//Tic Tac Teo Without AI
+
+#include <iostream> 
+using namespace std; 
+ 
+void drawBoard(char board[3][3]) 
+{ 
+    cout << "-------------\n"; 
+    for (int i = 0; i < 3; i++) { 
+        cout << "| "; 
+        for (int j = 0; j < 3; j++) { 
+            cout << board[i][j] << " | "; 
+        } 
+        cout << "\n-------------\n"; 
+    } 
+} 
+ 
+bool checkWin(char board[3][3], char player) 
+{ 
+    for (int i = 0; i < 3; i++) { 
+        if (board[i][0] == player && board[i][1] == player 
+            && board[i][2] == player) 
+            return true; 
+        if (board[0][i] == player && board[1][i] == player 
+                                                              
+ 
+            && board[2][i] == player) 
+            return true; 
+    } 
+    if (board[0][0] == player && board[1][1] == player 
+        && board[2][2] == player) 
+        return true; 
+    if (board[0][2] == player && board[1][1] == player 
+        && board[2][0] == player) 
+        return true; 
+    return false; 
+} 
+ 
+int main() 
+{ 
+    char board[3][3] = { { ' ', ' ', ' ' }, 
+                         { ' ', ' ', ' ' }, 
+                         { ' ', ' ', ' ' } }; 
+    char player = 'X'; 
+    int row, col; 
+    int turn; // Declare turn here 
+ 
+    cout << "Welcome to Tic-Tac-Toe!\n"; 
+ 
+     
+    for (turn = 0; turn < 9; turn++) { 
+         
+        drawBoard(board); 
+ 
+         
+        while (true) { 
+            cout << "Player " << player 
+                                                              
+ 
+                 << ", enter row (0-2) and column (0-2): "; 
+            cin >> row >> col; 
+ 
+            if (board[row][col] != ' ' || row < 0 || row > 2 
+                || col < 0 || col > 2) { 
+                cout << "Invalid move. Try again.\n"; 
+            } 
+            else { 
+                break;  
+            } 
+        } 
+ 
+         
+        board[row][col] = player; 
+ 
+         
+        if (checkWin(board, player)) { 
+            drawBoard(board); 
+            cout << "Player " << player << " wins!\n"; 
+            break;  
+        } 
+ 
+         
+        player = (player == 'X') ? 'O' : 'X'; 
+    } 
+ 
+     
+    drawBoard(board); 
+ 
+    if (turn == 9 && !checkWin(board, 'X') 
+        && !checkWin(board, 'O')) { 
+cout << "It's a draw!\n"; 
+
+} 
+return 0; 
+}
+
+
+//Tic Tac With AI
+
+#include <stdio.h> 
+char board[3][3] = { {' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '} }; 
+void drawBoard() { 
+printf("\n\n Tic Tac Toe with AI \n\n"); 
+printf("Player (X)  -  Computer (O)\n\n"); 
+                                                               
+ 
+    printf("     |     |     \n"); 
+    printf("  %c  |  %c  |  %c  \n", board[0][0], board[0][1], board[0][2]); 
+    printf("_____|_____|_____\n"); 
+    printf("     |     |     \n"); 
+    printf("  %c  |  %c  |  %c  \n", board[1][0], board[1][1], board[1][2]); 
+    printf("_____|_____|_____\n"); 
+    printf("     |     |     \n"); 
+    printf("  %c  |  %c  |  %c  \n", board[2][0], board[2][1], board[2][2]); 
+    printf("     |     |     \n"); 
+} 
+ 
+int checkWin() { 
+    for (int i = 0; i < 3; i++) { 
+        if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') return board[i][0] 
+== 'X' ? 10 : -10; 
+        if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != ' ') return board[0][i] 
+== 'X' ? 10 : -10; 
+    } 
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') return 
+board[0][0] == 'X' ? 10 : -10; 
+    if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ') return 
+board[0][2] == 'X' ? 10 : -10; 
+    return 0; 
+} 
+ 
+int isMovesLeft() { 
+    for (int i = 0; i < 3; i++) 
+        for (int j = 0; j < 3; j++) 
+            if (board[i][j] == ' ') return 1; 
+    return 0; 
+} 
+ 
+                                                              
+ 
+int minimax(int depth, int isMax) { 
+    int score = checkWin(); 
+    if (score == 10) return score - depth; 
+    if (score == -10) return score + depth; 
+    if (!isMovesLeft()) return 0; 
+ 
+    int best = isMax ? -1000 : 1000; 
+    for (int i = 0; i < 3; i++) { 
+        for (int j = 0; j < 3; j++) { 
+            if (board[i][j] == ' ') { 
+                board[i][j] = isMax ? 'X' : 'O'; 
+                best = isMax ? (best > minimax(depth + 1, !isMax) ? best : minimax(depth + 1, !isMax)) 
+                             : (best < minimax(depth + 1, !isMax) ? best : minimax(depth + 1, !isMax)); 
+                board[i][j] = ' '; 
+            } 
+        } 
+    } 
+    return best; 
+} 
+ 
+void bestMove() { 
+    int bestVal = 1000, row = -1, col = -1; 
+    for (int i = 0; i < 3; i++) { 
+        for (int j = 0; j < 3; j++) { 
+            if (board[i][j] == ' ') { 
+                board[i][j] = 'O'; 
+                int moveVal = minimax(0, 1); 
+                board[i][j] = ' '; 
+                if (moveVal < bestVal) { 
+                    row = i; 
+                    col = j; 
+                                                           
+ 
+                    bestVal = moveVal; 
+                } 
+            } 
+        } 
+    } 
+    board[row][col] = 'O'; 
+} 
+ 
+void playGame() { 
+    int playerMove; 
+    while (isMovesLeft()) { 
+        drawBoard(); 
+        printf("Enter position (1-9): "); 
+        scanf("%d", &playerMove); 
+        int row = (playerMove - 1) / 3, col = (playerMove - 1) % 3; 
+        if (board[row][col] != ' ') continue; 
+        board[row][col] = 'X'; 
+        if (checkWin()) break; 
+        bestMove(); 
+    } 
+    drawBoard(); 
+    printf(checkWin() ? "Game Over!\n" : "It's a draw!\n"); 
+} 
+ 
+int main() { 
+    playGame(); 
+    return 0; 
+}
+
+//Best First Search
+
+#include <iostream> 
+#include <queue> 
+#include <vector> 
+#include <unordered_set> 
+#include <cmath> 
+#include <algorithm> 
+ 
+using namespace std; 
+ 
+struct Node { 
+    int x, y; 
+    double h;  
+    Node* parent; 
+ 
+    Node(int x, int y, double h = 0.0) : x(x), y(y), h(h), parent(nullptr) {} 
+ 
+    bool operator==(const Node& other) const { 
+        return x == other.x && y == other.y; 
+    } 
+ 
+    bool operator<(const Node& other) const { 
+        return h > other.h;  
+    } 
+}; 
+ 
+struct NodeHasher { 
+    size_t operator()(const Node* n) const { 
+        return hash<int>()(n->x) ^ hash<int>()(n->y); // Custom hash function 
+for Node pointers 
+    } 
+}; 
+ 
+struct CompareNode { 
+    bool operator()(Node* n1, Node* n2) { 
+        return n1->h > n2->h; 
+    } 
+}; 
+ 
+class BestFirstSearch { 
+public: 
+    BestFirstSearch(int rows, int cols) : rows(rows), cols(cols) {} 
+ 
+                                                             
+ 
+    void setGrid(vector<vector<int>>& grid) { 
+        this->grid = grid; 
+    } 
+ 
+    vector<Node*> findPath(Node* start, Node* goal) { 
+        priority_queue<Node*, vector<Node*>, CompareNode> openSet; 
+        unordered_set<Node*, NodeHasher> closedSet; 
+        openSet.push(start); 
+ 
+        while (!openSet.empty()) { 
+            Node* current = openSet.top(); 
+            openSet.pop(); 
+ 
+            if (*current == *goal) { 
+                vector<Node*> path; 
+                while (current != nullptr) { 
+                    path.push_back(current); 
+                    current = current->parent; 
+                } 
+                reverse(path.begin(), path.end()); 
+                return path; 
+            } 
+ 
+            closedSet.insert(current); 
+ 
+            vector<pair<int, int>> neighbors = { 
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1}   
+            }; 
+ 
+            for (auto& direction : neighbors) { 
+                int newX = current->x + direction.first; 
+                int newY = current->y + direction.second; 
+ 
+                if (newX < 0 || newX >= rows || newY < 0 || newY >= cols || 
+grid[newX][newY] == 1) 
+                    continue; 
+ 
+                Node* neighbor = new Node(newX, newY, heuristic(newX, newY, 
+goal)); 
+                if (closedSet.find(neighbor) == closedSet.end()) { 
+                    neighbor->parent = current; 
+                    openSet.push(neighbor); 
+                } 
+            } 
+        } 
+ 
+        return {};  
+    } 
+ 
+ 
+private: 
+    int rows, cols; 
+    vector<vector<int>> grid; 
+ 
+    double heuristic(int x, int y, Node* goal) { 
+        return abs(x - goal->x) + abs(y - goal->y);   
+    } 
+}; 
+ 
+int main() { 
+    int rows = 5, cols = 5; 
+    vector<vector<int>> grid = { 
+        {0, 0, 0, 1, 0}, 
+        {0, 1, 0, 1, 0}, 
+        {0, 1, 0, 0, 0}, 
+        {0, 0, 0, 1, 0}, 
+        {0, 1, 0, 0, 0} 
+    }; 
+ 
+    BestFirstSearch bfs(rows, cols); 
+    bfs.setGrid(grid); 
+ 
+    Node* start = new Node(0, 0); 
+    Node* goal = new Node(4, 4); 
+ 
+    vector<Node*> path = bfs.findPath(start, goal); 
+ 
+    if (!path.empty()) { 
+        cout << "Path found:\n"; 
+        for (Node* node : path) { 
+            cout << "(" << node->x << ", " << node->y << ")\n"; 
+        } 
+    } else { 
+        cout << "No path found\n"; 
+    } 
+ 
+    return 0; 
+} 
+
+
+
+
+//A* Algorithm
+
+#include <iostream> 
+#include <vector> 
+#include <queue> 
+#include <cmath> 
+#include <unordered_map> 
+#include <set> 
+#include <algorithm> 
+ 
+using namespace std; 
+ 
+struct Node { 
+    int x, y; 
+    double g, h; // g = cost from start, h = heuristic to goal 
+    Node* parent; 
+     
+    Node(int x, int y) : x(x), y(y), g(0), h(0), parent(nullptr) {} 
+ 
+    double f() const { return g + h; } 
+ 
+    bool operator==(const Node& other) const { 
+        return x == other.x && y == other.y; 
+    } 
+ 
+    bool operator<(const Node& other) const { 
+        return f() > other.f(); 
+    } 
+}; 
+ 
+struct CompareNode { 
+    bool operator()(Node* n1, Node* n2) { 
+        return n1->f() > n2->f();  // Min-heap based on f score 
+    } 
+}; 
+ 
+                                                              
+ 
+class AStar { 
+public: 
+    AStar(int rows, int cols) : rows(rows), cols(cols) {} 
+ 
+    // Set grid where 1 is obstacle, 0 is free space 
+    void setGrid(vector<vector<int>>& grid) { 
+        this->grid = grid; 
+    } 
+ 
+    vector<Node*> findPath(Node* start, Node* goal) { 
+        priority_queue<Node*, vector<Node*>, CompareNode> openSet; 
+        set<Node*> closedSet; 
+        unordered_map<int, unordered_map<int, Node*>> allNodes; 
+ 
+        openSet.push(start); 
+        allNodes[start->x][start->y] = start; 
+ 
+        while (!openSet.empty()) { 
+            Node* current = openSet.top(); 
+            openSet.pop(); 
+ 
+            // If we reached the goal, reconstruct path 
+            if (*current == *goal) { 
+                vector<Node*> path; 
+                while (current != nullptr) { 
+                    path.push_back(current); 
+                    current = current->parent; 
+                } 
+                reverse(path.begin(), path.end()); 
+                return path; 
+            } 
+ 
+            closedSet.insert(current); 
+ 
+            // Explore neighbors (8 directions) 
+            vector<pair<int, int>> neighbors = { 
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1}, // 4 directions (up, down, 
+left, right) 
+                {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // 4 diagonals 
+            }; 
+ 
+            for (auto& direction : neighbors) { 
+                int newX = current->x + direction.first; 
+                int newY = current->y + direction.second; 
+ 
+                if (newX < 0 || newX >= rows || newY < 0 || newY >= cols || 
+grid[newX][newY] == 1) 
+                    continue; // Skip invalid or blocked cells 
+                                                               
+ 
+ 
+                Node* neighbor = new Node(newX, newY); 
+                if (closedSet.find(neighbor) != closedSet.end()) continue; // 
+Already processed 
+ 
+                double tentative_g = current->g + 1; // Assuming cost between 
+nodes is always 1 
+                if (allNodes[neighbor->x][neighbor->y] == nullptr || 
+tentative_g < neighbor->g) { 
+                    neighbor->g = tentative_g; 
+                    neighbor->h = heuristic(neighbor, goal); 
+                    neighbor->parent = current; 
+ 
+                    openSet.push(neighbor); 
+                    allNodes[neighbor->x][neighbor->y] = neighbor; 
+                } 
+            } 
+        } 
+ 
+        return {}; // No path found 
+    } 
+ 
+private: 
+    int rows, cols; 
+    vector<vector<int>> grid; 
+ 
+    // Heuristic function (Euclidean distance) 
+    double heuristic(Node* a, Node* b) { 
+        return sqrt(pow(a->x - b->x, 2) + pow(a->y - b->y, 2)); 
+    } 
+}; 
+ 
+int main() { 
+    int rows = 5, cols = 5; 
+    vector<vector<int>> grid = { 
+        {0, 0, 0, 1, 0}, 
+        {0, 1, 0, 1, 0}, 
+        {0, 1, 0, 0, 0}, 
+        {0, 0, 0, 1, 0}, 
+        {0, 1, 0, 0, 0} 
+    }; 
+ 
+    AStar aStar(rows, cols); 
+    aStar.setGrid(grid); 
+ 
+    Node* start = new Node(0, 0); 
+    Node* goal = new Node(4, 4); 
+ 
+
+vector<Node*> path = aStar.findPath(start, goal); 
+if (!path.empty()) { 
+cout << "Path found:\n"; 
+for (Node* node : path) { 
+cout << "(" << node->x << ", " << node->y << ")\n"; 
+} 
+} else { 
+cout << "No path found\n"; 
+} 
+return 0; 
+} 
+
+
+
+
+//N - Queen
+
+#include <iostream> 
+ 
+#include <vector> 
+using namespace std; 
+ 
+void printSolution(vector<vector<int>> &board, int N) { 
+    for (int i = 0; i < N; i++) { 
+    for (int j = 0; j < N; j++) { 
+        cout << (board[i][j] ? "Q " : ". "); 
+    } 
+    cout << endl; 
+    } 
+ 
+    cout << endl; 
+} 
+ 
+bool isSafe(vector<vector<int>> &board, int row, int col, int N) { 
+ 
+    for (int i = 0; i < row; i++) { 
+    if (board[i][col]) return false; 
+    } 
+ 
+    for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) { 
+    if (board[i][j]) return false; 
+    } 
+ 
+    for (int i = row, j = col; i >= 0 && j < N; i--, j++) { 
+    if (board[i][j]) return false; 
+    } 
+                                                               
+ 
+ 
+    return true; 
+} 
+ 
+bool solveNQueensUtil(vector<vector<int>> &board, int row, int N) { 
+    if (row == N) { 
+    printSolution(board, N); 
+    return true; 
+    } 
+ 
+    bool foundSolution = false; 
+    for (int col = 0; col < N; col++) { 
+    if (isSafe(board, row, col, N)) { 
+        board[row][col] = 1; 
+        foundSolution |= solveNQueensUtil(board, row + 1, N); 
+        board[row][col] = 0; 
+    } 
+    } 
+ 
+    return foundSolution; 
+} 
+ 
+void solveNQueens(int N) { 
+    vector<vector<int>> board(N, vector<int>(N, 0)); 
+ 
+    if (!solveNQueensUtil(board, 0, N)) { 
+    cout << "No solution exists for " << N << " queens." << endl; 
+    } 
+} 
+ 
+int main() { 
+    int N; 
+    cout << "Enter the value of N: "; 
+    cin >> N; 
+    solveNQueens(N); 
+    string input; 
+    cout << "Press Enter to exit the program..." << std::endl; 
+    getline(cin, input); 
+    if (input.empty()) { 
+        cout<<"Exiting"; 
+        return 0;  
+    } 
+    
+    return 0; 
+}
+
+
+
+//Graph Colouring
+
+#include <iostream> 
+#include <vector> 
+using namespace std; 
+class Graph { 
+public: 
+int V;   
+vector<vector<int>> adj;   
+Graph(int V) { 
+this->V = V; 
+adj.resize(V); 
+                                                              
+ 
+    } 
+ 
+     
+    void addEdge(int u, int v) { 
+        adj[u].push_back(v); 
+        adj[v].push_back(u); 
+    } 
+ 
+     
+    void greedyColoring() { 
+        vector<int> result(V, -1);   
+        result[0] = 0;   
+         
+        vector<bool> available(V, false); 
+ 
+         
+        for (int u = 1; u < V; u++) { 
+             
+            for (int i = 0; i < adj[u].size(); i++) { 
+                if (result[adj[u][i]] != -1) { 
+                    available[result[adj[u][i]]] = true; 
+                } 
+            } 
+ 
+             
+            int cr; 
+            for (cr = 0; cr < V; cr++) { 
+                if (!available[cr]) { 
+                    break; 
+                } 
+            } 
+                                                             
+ 
+ 
+             
+            result[u] = cr; 
+ 
+            
+            fill(available.begin(), available.end(), false); 
+        } 
+ 
+         
+        cout << "Vertex | Color" << endl; 
+        for (int u = 0; u < V; u++) { 
+            cout << u << " \t | " << result[u] << endl; 
+        } 
+    } 
+}; 
+ 
+int main() { 
+    Graph g(5);   
+ 
+    g.addEdge(0, 1); 
+    g.addEdge(0, 2); 
+    g.addEdge(1, 2); 
+    g.addEdge(1, 3); 
+    g.addEdge(3, 4); 
+ 
+    g.greedyColoring();  
+    return 0; 
+}
