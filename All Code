@@ -719,3 +719,94 @@ int main() {
     g.greedyColoring();  
     return 0; 
 }
+
+//Prolog Disease
+
+symptom(fatigue).
+symptom(abdominal_pain).
+symptom(weight_loss).
+symptom(hyperacidity).
+symptom(diarrhea). 
+
+
+risk_factor(smoking).
+risk_factor(family_history).
+risk_factor(age_between_15_and_35).
+risk_factor(ethnicity(jewish)).
+
+
+treatment(medication).
+treatment(surgery).
+treatment(diet_modification).
+
+
+related_condition(ulcerative_colitis).
+related_condition(irritable_bowel_syndrome).
+related_condition(cancer).
+
+
+has_symptom(Person, fatigue).
+has_symptom(Person, abdominal_pain).
+
+
+has_risk_factor(Person, smoking).
+has_risk_factor(Person, family_history).
+
+
+% diagnosis rules
+possible_crohns_disease(Person) :-
+    has_symptom(Person, Symptom),
+    symptom(Symptom),
+    has_risk_factor(Person, RiskFactor),
+    risk_factor(RiskFactor).
+
+
+high_risk(Person) :-
+    has_risk_factor(Person, smoking),
+    has_risk_factor(Person, family_history).
+
+high_risk(Person) :-
+    has_risk_factor(Person, age_between_15_and_35),
+    has_risk_factor(Person, ethnicity(jewish)).
+
+
+
+
+%treatment rules
+recommended_treatment(Person, treatment(medication)) :-
+    has_symptom(Person, fatigue),
+    has_symptom(Person, diarrhea).
+
+recommended_treatment(Person, treatment(surgery)) :-
+    has_symptom(Person, hyperacidity),
+    has_symptom(Person, weight_loss).
+
+recommended_treatment(Person, treatment(diet_modification)) :-
+    has_symptom(Person, abdominal_pain).
+
+
+
+Q1
+has_symptom(joh, fatigue), 
+   has_symptom(joh, abdominal_pain), 
+   has_risk_factor(joh, smoking),
+   has_risk_factor(joh, family_history), 
+   possible_crohns_disease(joh).
+
+Q2
+ has_symptom(joh, fatigue), 
+   has_symptom(joh, abdominal_pain), 
+   has_risk_factor(joh, smoking),
+   has_risk_factor(joh, family_history), 
+   recommended_treatment(john,treatment(medication)).
+  
+
+
+
+
+Q3
+   has_symptom(joh, fatigue), 
+   has_symptom(joh, abdominal_pain), 
+   has_risk_factor(joh, smoking),
+   has_risk_factor(joh, family_history), 
+  high_risk(john).
